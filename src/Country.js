@@ -9,18 +9,8 @@ class Country extends Component {
     constructor(props) {
         super(props);
 
-        let country=""
-        let feed=""
-        if(this.props.location.countryDetails) {
-            country = props.location.countryDetails.country.get('name')
-            feed = props.location.countryDetails.country.get('feed')
-        } else {
-            //default
-            country="uk"
-            feed="http://feeds.bbci.co.uk/news/rss.xml?edition=uk"
-        }
-
-
+        let country = props.name
+        let feed = props.feed
         const CORS_PROXY = "https://cors-anywhere.herokuapp.com/"
         let parser = new Parser()
         parser.parseURL(CORS_PROXY + feed, this.callback)
@@ -28,6 +18,18 @@ class Country extends Component {
             name: country,
             articles: []
         };
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const country = nextProps.name
+        let feed=nextProps.feed
+        const CORS_PROXY = "https://cors-anywhere.herokuapp.com/"
+        let parser = new Parser()
+        parser.parseURL(CORS_PROXY + feed, this.callback)
+        this.setState({
+            name: country,
+            articles: this.state.articles
+        });
     }
 
     callback = (err, feed) => {
@@ -51,14 +53,12 @@ class Country extends Component {
         this.setState({ "articles": articles })
     }
 
-    renderArticles() {
-
-    }
-
     render() {
         return (
             <div>
-                <h1>{this.state.name} news</h1>
+
+                <h1>{this.props.name}</h1>
+
                 {this.state.articles.map(element => {
                     const link = element.get('link')
                     const title = element.get('title')
