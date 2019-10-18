@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import './App.css';
 import Parser from 'rss-parser'
 import { Map } from 'immutable'
-import StoryModal from './StoryModal'
 
 
 
@@ -23,7 +22,6 @@ class Country extends Component {
             articles: [],
             publisher: publisher
         };
-        this.handleShow = this.handleShow.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -36,7 +34,6 @@ class Country extends Component {
         this.setState({
             name: country,
             articles: this.state.articles,
-            show:false,
             publisher: publisher
         });
     }
@@ -67,19 +64,10 @@ class Country extends Component {
         this.setState({ "articles": articles })
     }
 
-
-    handleShow(link) {
-
-        this.setState({ show: true,
-        link:link });
-    }
-
     render() {
         return (
 
             <div>
-
-                <StoryModal name ={this.state.name }link={this.state.link} show={this.state.show} />
                 <h1>{this.props.name}</h1>
 
                 {this.state.articles.map(element => {
@@ -92,10 +80,13 @@ class Country extends Component {
 
                     if (contentSnippet)
                         return <div key={guid}>
-                            <a onClick={()=>this.handleShow(link)}>{title}<br /></a>
+                            <a href={link}  target="_blank">{title}</a>
+                            {/* A few like der speigel have encoded content that could be shown instead of the content snippet */}
+                            {/* <div dangerouslySetInnerHTML={{ __html: element.get('encodedContent') }} /> */}
                             <div>{contentSnippet}</div>
                             <div><strong>{this.state.publisher}</strong></div>
                             {pubDate}<br />
+
                             <br />
                         </div>
                     else
