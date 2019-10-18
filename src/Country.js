@@ -45,15 +45,13 @@ class Country extends Component {
          
 
         feed.items.forEach((entry) => {
-            let shortenedContentSnippet = entry.contentSnippet.substring(0,200) + "..." //TODO format properly
-
             const encodedContent = entry['content:encoded']
             let title = Map({
                 id: entry.id,
                 title: entry.title,
                 link: entry.link,
                 encodedContent: encodedContent,
-                contentSnippet: shortenedContentSnippet,
+                contentSnippet: entry.contentSnippet,
                 pubDate: entry.pubDate,
                 guid: entry.guid,
                 isoDate: entry.isoDate,
@@ -77,13 +75,13 @@ class Country extends Component {
                     const contentSnippet = element.get('contentSnippet')
                     const pubDate = element.get('pubDate')
                     const guid = element.get('guid')
-
+                    const encodedContent = element.get('encodedContent')
                     if (contentSnippet)
                         return <div key={guid}>
                             <a href={link}  target="_blank">{title}</a>
                             {/* A few like der speigel have encoded content that could be shown instead of the content snippet */}
                             {/* <div dangerouslySetInnerHTML={{ __html: element.get('encodedContent') }} /> */}
-                            <div>{contentSnippet}</div>
+                            {encodedContent !== undefined && encodedContent.length > 0 ? <div dangerouslySetInnerHTML={{ __html: element.get('encodedContent') }} /> : <div>{contentSnippet}</div>}
                             <div><strong>{this.state.publisher}</strong></div>
                             {pubDate}<br />
 
