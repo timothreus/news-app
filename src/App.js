@@ -1,226 +1,210 @@
 import React, { Component } from 'react';
+import Form from 'react-bootstrap/Form';
 import './App.css';
-import Country from './Country'
+import NewsItem from './NewsItem'
 
 import { List, Map } from 'immutable'
 
 class App extends Component {
-  //TODO get a scrollbar on the modal
-
   constructor(props) {
     super(props)
 
-    const europe = Map({
-      name: "Europe",
-      countries: List([
+    const english = Map({
+      name: "English",
+      publications: List([
         Map({
+          continent: "Europe",
           country: "UK",
-          feed: /*'https://www.theguardian.com/uk/rss',*/ 'http://feeds.bbci.co.uk/news/rss.xml?edition=uk',
-          publisher: 'BBC' //''The Guardian'
+          feed: 'https://www.theguardian.com/uk/rss',
+          name: 'The Guardian',
+          topic: "news"
         }),
         Map({
-          country: "Germany",
-          feed: 'http://www.spiegel.de/international/index.rss',//TODO german news not international
-          publisher: 'Der Spiegel'
+          continent: "Europe",
+          country: "UK",
+          feed: 'http://feeds.bbci.co.uk/news/rss.xml?edition=uk',
+          name: 'BBC',
+          topic: "news"
         }),
         Map({
-          country: "Romania",
-          feed: 'https://www.digi24.ro/rss',
-          publisher: 'Digi24'
-        }),
-        Map({
+          continent: "Europe",
           country: "France",
           feed: 'http://www.france24.com/en/france/rss',
-          publisher: 'France24'
-        })
-
-      ])
-    })
-
-    const asia = Map({
-      name: "Asia",
-      countries: List([
+          name: 'France24',
+          topic: "news"
+        }),
         Map({
+          continent: "North America",
+          country: "US",
+          feed: 'https://www.voanews.com/api/zq$omekvi_',
+          name: 'VOA',
+          topic: "news"
+
+        }),
+        Map({
+          continent: "Asia",
           country: "Bhutan",
           feed: 'http://www.kuenselonline.com/feed/',
-          publisher: 'Kuensel'
+          name: 'Kuensel',
+          topic: "news"
         }),
 
         Map({
+          continent: "Asia",
           country: "Japan",
           feed: 'http://feeds.thejapannews.net/rss/c4f2dd8ca8c78044',
-          publisher: 'The Japan News'
-        })
-
-      ])
-    })
-
-    const australasia = Map({
-      name: "Australasia",
-      countries: List([
+          name: 'The Japan News',
+          topic: "news"
+        }),
         Map({
+          continent: "Australasia",
           country: "Australia",
           feed: 'http://www.abc.net.au/radio/programs/the-signal/feed/9443166/podcast.xmls',
-          publisher: 'ABC'
-          //TODO should be aus news ot international
-        })
-
-      ])
-    })
-
-    const northAmerica = Map({
-      name: "North America",
-      countries: List([
+          name: 'ABC',
+          topic: "news"
+        }),
         Map({
+          continent: "Europe",
+          country: "Germany",
+          feed: 'http://www.spiegel.de/international/index.rss',
+          name: 'Der Spiegel',
+          topic: "news"
+        }),
+        Map({
+          continent: "North America",
           country: "US",
-          feed: 'https://www.voanews.com/api/zq$omekvi_',  //TODO us news
-          publisher: 'VOA'
-
-        })
-
-      ])
-    })
-
-    const topics = Map({
-      name: "Topics",
-      countries: List([
-        Map({
-          country: "Humour",
           feed: 'https://www.newyorker.com/feed/humor',
-          publisher: 'The New Yorker'
+          name: 'The New Yorker',
+          topic: "humour"
         }),
         Map({
-          country: "Religion",
+          continent: "North America",
+          country: "US",
           feed: 'https://www.firstthings.com/rss/web-exclusives',
-          publisher: 'First Things'
+          name: 'First Things',
+          topic: "religion"
         }),
         Map({
+          continent: "Europe",
           country: "Sport",
           feed: 'http://www.skysports.com/rss/12040',
-          publisher: 'Sky Sports'
+          name: 'Sky Sports',
+          topic: "sport"
         })
-
-
-
       ])
     })
 
 
+    const romanian = Map({
+      name: "Romanian",
+      publications: List([
+        Map({
+          continent: "Europe",
+          country: "Romania",
+          feed: 'https://www.digi24.ro/rss',
+          name: 'Digi24'
+        })
 
-    const allFeeds = List([europe, asia, australasia, northAmerica, topics])
-
-    const availableContinents = allFeeds.map(element => {
-      return element.get('name')
-    });
-
-
-    const firstContinentCountries = allFeeds.get(0).get('countries')
-    const countriesInFirstContinent = firstContinentCountries.map(element => {
-      return element.get('country')
-    });
+      ])
+    })
+    const allPublications = List([english, romanian])
+    const availableLanguages = this.getNames(allPublications);
+    const firstLangaugePublications = allPublications.get(0).get('publications')
+    const publicationNamesInFirstLangauge = this.getNames(firstLangaugePublications)
 
     this.state = {
-      allFeeds: allFeeds,
-      availableContinents: availableContinents,
-      selectedContinent: availableContinents.get(0),
-      availableCountries: countriesInFirstContinent,
-      selectedCountry: countriesInFirstContinent.get(0),
-      feed: firstContinentCountries.get(0).get('feed'),
-      publisher: firstContinentCountries.get(0).get('publisher'),
+      allPublications: allPublications,
+      availableLanguages: availableLanguages,
+      selectedLanguage: availableLanguages.get(0),
+      availablePublications: publicationNamesInFirstLangauge,
+      selectedPublication: publicationNamesInFirstLangauge.get(0),
+      feed: firstLangaugePublications.get(0).get('feed'),
+      publicationName: firstLangaugePublications.get(0).get('name'),
       articles: []
     };
-    this.handleContinentChange = this.handleContinentChange.bind(this);
-    this.handleCountryChange = this.handleCountryChange.bind(this);
+    this.handleLanguageChange = this.handleLanguageChange.bind(this);
+    this.handlePublicationChange = this.handlePublicationChange.bind(this);
   }
 
-  handleCountryChange(event) {
-    const clickOnCountry = event.target.value
-    const feed = this.getFeedFromCountry(clickOnCountry, this.state.selectedContinent).get("feed")
-    const publisher = this.getFeedFromCountry(clickOnCountry, this.state.selectedContinent).get("publisher")
+  getNames = (object) => {
+    return object.map(element => {
+      return element.get("name")
+    })
+  }
+
+  getAllThePublicationsInLanguage = (language) => {
+    return this.state.allPublications
+      .find(allPublicationsByLangauge => {
+        return allPublicationsByLangauge.get("name") === language
+      }).get("publications")
+  }
+
+  getPublication(publicationName, language) {
+    const publications = this.getAllThePublicationsInLanguage(language);
+    return publications
+      .find(p => {
+        return p.get("name") === publicationName
+      })
+  }
+
+  handlePublicationChange(event) {
+    const selectedPublication = event.target.value
+    const publication = this.getPublication(selectedPublication, this.state.selectedLanguage);
 
     this.setState({
-      selectedCountry: clickOnCountry,
-      feed: feed,
-      publisher: publisher
+      selectedPublication: selectedPublication,
+      feed: publication.get("feed"),
+      publicationName: publication.get("name")
     })
   }
 
-  handleContinentChange(event) {
-    const clickOnContinent = event.target.value
-    const countryFeeds = []
-    this.state.allFeeds.forEach(element => {
-      if (element.get("name") === clickOnContinent) {
-        countryFeeds.push(element.get("countries"))
-      }
-    })
 
-    const listOfCountries = countryFeeds[0].map(element => {
-      return element.get('country')
-    })
-
-    const feed = this.getFeedFromCountry(listOfCountries.first(), clickOnContinent).get("feed")
-    const publisher = this.getFeedFromCountry(listOfCountries.first(), clickOnContinent).get("publisher")
+  handleLanguageChange(event) {
+    const clickedOnLanguage = event.target.value
+    const publicationsForLanguage = this.getAllThePublicationsInLanguage(clickedOnLanguage);
+    const publicationNames = this.getNames(publicationsForLanguage);
+    const publication = this.getPublication(publicationNames.first(), clickedOnLanguage)
 
     this.setState({
-      selectedContinent: clickOnContinent,
-      availableCountries: listOfCountries,
-      selectedCountry: listOfCountries.first(),
-      feed: feed,
-      publisher: publisher
+      selectedLanguage: clickedOnLanguage,
+      availablePublications: publicationNames,
+      selectedPublication: publicationNames.first(),
+      feed: publication.get("feed"),
+      publicationName: publication.get("name")
 
     })
   }
 
-  getFeedFromCountry(country, continent) {
-    const allFeeds = this.state.allFeeds
-
-    const countryFeeds = []
-    allFeeds.forEach(element => {
-      if (element.get("name") === continent) {
-        countryFeeds.push(element.get("countries"))
-      }
-    })
-
-    const listOfCountriesWithFeeds = countryFeeds[0].map(element => {
-      return element
-    })
-
-    let feed = ""
-
-    listOfCountriesWithFeeds.forEach(element => {
-      if (element.get("country") === country) {
-        feed = element//.get("feed") //TODO rename function
-      }
-    })
-
-    return feed
-  }
 
   render() {
     return (
       <div className="App">
         <header className="App-header">
           <h1 className="App-title">News</h1>
-
-
-          <select id="continent-select" value={this.state.selectedContinent} onChange={this.handleContinentChange}>
-            {this.state.availableContinents.map(element => {
-              //TODO find more suitable key
-              return <option key={element} value={element}>{element}</option>
-            })}
-          </select>
-
-          <select id="country-select" value={this.state.selectedCountry} onChange={this.handleCountryChange}>
-            {this.state.availableCountries.map(element => {
-              //TODO find more suitable key
-              return <option key={element} value={element}>{element}</option>
-            })}
-          </select>
+          <Form inline>
+            <Form.Group controlId="language-select" value={this.state.selectedLanguage} onChange={this.handleLanguageChange}>
+              <Form.Label>Language select</Form.Label>
+              <Form.Control as="select">
+              {this.state.availableLanguages.map(language => {
+                return <option key={language} value={language}>{language}</option>
+              })}
+              </Form.Control>
+            </Form.Group>
+            
+            <Form.Group controlId="publication-select" value={this.state.selectedPublication} onChange={this.handlePublicationChange}>
+              <Form.Label>Publication select</Form.Label>
+              <Form.Control as="select">
+              {this.state.availablePublications.map(publication => {
+                  return <option key={publication} value={publication}>{publication}</option>
+                })}
+              </Form.Control>
+            </Form.Group>
+          </Form>
 
         </header>
 
-        <Country name={this.state.selectedCountry} feed={this.state.feed} publisher={this.state.publisher} />
-      </div>
+        <NewsItem name={this.state.selectedPublication} feed={this.state.feed} publicationName={this.state.publicationName} />
+      </div >
     );
   }
 }

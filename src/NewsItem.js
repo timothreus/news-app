@@ -5,7 +5,7 @@ import { Map } from 'immutable'
 
 
 
-class Country extends Component {
+class NewsItem extends Component {
 
     constructor(props, context) {
         super(props, context);
@@ -13,28 +13,28 @@ class Country extends Component {
 
         let country = props.name
         let feed = props.feed
-        let publisher = props.publisher
+        let publicationName = props.publicationName
         const CORS_PROXY = "https://cors-anywhere.herokuapp.com/"
         let parser = new Parser()
         parser.parseURL(CORS_PROXY + feed, this.callback)
         this.state = {
             name: country,
             articles: [],
-            publisher: publisher
+            publicationName: publicationName
         };
     }
 
     componentWillReceiveProps(nextProps) {
         const country = nextProps.name
         let feed = nextProps.feed
-        let publisher = nextProps.publisher
+        let publicationName = nextProps.publicationName
         const CORS_PROXY = "https://cors-anywhere.herokuapp.com/"
         let parser = new Parser()
         parser.parseURL(CORS_PROXY + feed, this.callback)
         this.setState({
             name: country,
             articles: this.state.articles,
-            publisher: publisher
+            publicationName: publicationName
         });
     }
 
@@ -82,7 +82,7 @@ class Country extends Component {
                             {/* A few like der speigel have encoded content that could be shown instead of the content snippet */}
                             {/* <div dangerouslySetInnerHTML={{ __html: element.get('encodedContent') }} /> */}
                             {encodedContent !== undefined && encodedContent.length > 0 ? <div dangerouslySetInnerHTML={{ __html: element.get('encodedContent') }} /> : <div>{contentSnippet}</div>}
-                            <div><strong>{this.state.publisher}</strong></div>
+                            <div><strong>{this.state.publicationName}</strong></div>
                             {pubDate}<br />
 
                             <br />
@@ -101,4 +101,4 @@ class Country extends Component {
     }
 }
 
-export default Country;
+export default NewsItem;
