@@ -36,3 +36,8 @@ figure>figcaption {
   max-height: 70vh;
   overflow-y: auto;
 }
+
+.news-item, .blank-line-after {
+  float: left;
+  width:100%;
+}

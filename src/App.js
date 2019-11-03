@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Form from 'react-bootstrap/Form';
 import './App.css';
-import NewsItem from './NewsItem'
+import AllNewsItems from './AllNewsItems'
 
 import { List, Map } from 'immutable'
 
@@ -203,7 +203,8 @@ class App extends Component {
 
         </header>
 
-        <NewsItem name={this.state.selectedPublication} feed={this.state.feed} publicationName={this.state.publicationName} />
+        <AllNewsItems name={this.state.selectedPublication} feed={this.state.feed} publicationName={this.state.publicationName} />
+
       </div >
     );
   }

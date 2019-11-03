@@ -5,7 +5,7 @@ import { Map } from 'immutable'
 
 
 
-class NewsItem extends Component {
+class AllNewsItems extends Component {
 
     constructor(props, context) {
         super(props, context);
@@ -68,31 +68,43 @@ class NewsItem extends Component {
             <div>
                 <h1>{this.props.name}</h1>
 
-                {this.state.articles.map(element => {
-                    const link = element.get('link')
+                {this.state.articles.map(newsItem => {
+                    const link = newsItem.get('link')
                     
-                    const title = element.get('title')
-                    const contentSnippet = element.get('contentSnippet')
-                    const pubDate = element.get('pubDate')
-                    const guid = element.get('guid')
-                    const encodedContent = element.get('encodedContent')
+                    const title = newsItem.get('title')
+                    const contentSnippet = newsItem.get('contentSnippet')
+                    const pubDate = newsItem.get('pubDate')
+                    const guid = newsItem.get('guid')
+                    const encodedContent = newsItem.get('encodedContent')
                     if (contentSnippet)
-                        return <div key={guid}>
-                            <a href={link}  target="_blank">{title}</a>
-                            {/* A few like der speigel have encoded content that could be shown instead of the content snippet */}
-                            {/* <div dangerouslySetInnerHTML={{ __html: element.get('encodedContent') }} /> */}
-                            {encodedContent !== undefined && encodedContent.length > 0 ? <div dangerouslySetInnerHTML={{ __html: element.get('encodedContent') }} /> : <div>{contentSnippet}</div>}
-                            <div><strong>{this.state.publicationName}</strong></div>
-                            {pubDate}<br />
-
-                            <br />
-                        </div>
+                        return (
+                            <div>
+                                <div class="news-item" key={guid}>
+                                    <a href={link}  target="_blank">{title}</a>
+                                    {encodedContent !== undefined && encodedContent.length > 0 ? <div dangerouslySetInnerHTML={{ __html: newsItem.get('encodedContent') }} /> : <div>{contentSnippet}</div>}
+                                    <div>
+                                        <strong>{this.state.publicationName}</strong>
+                                    </div>
+                                    {pubDate}
+                                </div>
+                                <div className="blank-line-after">
+                                    <br />
+                                </div>
+                            </div>  
+                        )
                     else
-                        return <div key={link}>
-                            <a href={link}>{title}</a><br />
-                            {pubDate}<br />
-                            <br />
-                        </div>
+                        return (
+                            <div>
+                                <div class="news-item" key={link}>
+                                    <a href={link}>{title}</a><br />
+                                    {pubDate}<br />
+                                    <br />
+                                </div>
+                                <div className="blank-line-after">
+                                    <br />
+                                </div>
+                            </div>
+                        )
 
                 })}
 
@@ -101,4 +113,4 @@ class NewsItem extends Component {
     }
 }
 
-export default NewsItem;
+export default AllNewsItems;
